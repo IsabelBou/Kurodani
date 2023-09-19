@@ -1,0 +1,29 @@
+{
+  "name": "kurodani-backend",
+  "version": "0.0.1",
+  "description": "jQuery test to scrap and parse data into a file",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IsabelBou/Kurodani.git"
+  },
+  "keywords": [
+    "scraper",
+    "jquery",
+    "regex"
+  ],
+  "author": "Isabel Bou",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IsabelBou/Kurodani/issues"
+  },
+  "homepage": "https://github.com/IsabelBou/Kurodani#readme",
+  "dependencies": {
+    "jquery": "^3.7.1",
+    "jsdom": "^22.1.0"
+  }
+}
