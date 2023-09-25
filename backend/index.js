@@ -1,4 +1,5 @@
 const { JSDOM } = require( "jsdom" );
+const _ = require("lodash");
 const { window } = new JSDOM ("", {
     url: "https://gamepress.gg/lostword/list/story-cards-list",
 });
@@ -17,8 +18,10 @@ $.get("https://gamepress.gg/lostword/list/story-cards-list", function(html) {
         const card = {
             name: $(cardHTML).attr("data-name"),
             imgsource: $(cardHTML).find("img").attr("src"),
-            //TODO: Get ID from card image link since it's nowhere else
-            //TODO: Double parameter definition function
+            //TODO: Get ID from imgsource using regex since it's nowhere else
+            rarity: $(cardHTML).attr("data-rarity"),
+            stats: _.omit($(cardHTML).data(), ["effects", "rarity", "cat-1", "cat-2", "name"])
+            //TODO: Store card's ID effects using _.pick()
         }
         console.log(card);
         cards.push(card);
@@ -39,4 +42,3 @@ $.get("https://gamepress.gg/lostword/list/story-cards-list", function(html) {
     });
 
 });
-

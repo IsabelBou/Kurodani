@@ -24,6 +24,7 @@
   "homepage": "https://github.com/IsabelBou/Kurodani#readme",
   "dependencies": {
     "jquery": "^3.7.1",
-    "jsdom": "^22.1.0"
+    "jsdom": "^22.1.0",
+    "lodash": "^4.17.21"
   }
 }
