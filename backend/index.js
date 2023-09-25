@@ -15,12 +15,9 @@ $.get("https://gamepress.gg/lostword/list/story-cards-list", function(html) {
     const cards =  []
 
     cardHTMLElements.each((i,cardHTML) => {
-        const imgsource = $(cardHTML).find("img").attr("src")
         const card = {
             name: $(cardHTML).attr("data-name"),
-            imgsource: imgsource,
-            id: imgsource.match(/\/[\d|\_]*(\d{3,4})[\.|\_|\%]/)[1],
-            //TODO: Get ID from imgsource using regex since it's nowhere else
+            imgsource: $(cardHTML).find("img").attr("src"),
             rarity: $(cardHTML).attr("data-rarity"),
             stats: _.omit($(cardHTML).data(), ["effects", "rarity", "cat-1", "cat-2", "name"])
             //TODO: Store card's ID effects using _.pick()
