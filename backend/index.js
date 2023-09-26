@@ -18,8 +18,9 @@ $.get("https://gamepress.gg/lostword/list/story-cards-list", function(html) {
         const card = {
             name: $(cardHTML).attr("data-name"),
             imgsource: $(cardHTML).find("img").attr("src"),
+            link: $(cardHTML).find("a").attr("href"),
             rarity: $(cardHTML).attr("data-rarity"),
-            stats: _.omit($(cardHTML).data(), ["effects", "rarity", "cat-1", "cat-2", "name"])
+            stats: _.omit($(cardHTML).data(), ["effects", "rarity", "cat-1", "cat-2", "name"]),
             //TODO: Store card's ID effects using _.pick()
         }
         console.log(card);
@@ -37,6 +38,7 @@ $.get("https://gamepress.gg/lostword/list/story-cards-list", function(html) {
             id: ($(effectHTML).attr("value")),
             name: ($(effectHTML).text()),
         }
+        console.log(effect);
         effects.push(effect);
     });
 
