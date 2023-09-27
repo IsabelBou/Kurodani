@@ -20,8 +20,10 @@ $.get("https://gamepress.gg/lostword/list/story-cards-list", function(html) {
             imgsource: $(cardHTML).find("img").attr("src"),
             link: $(cardHTML).find("a").attr("href"),
             rarity: $(cardHTML).attr("data-rarity"),
+            //These are two stats out of 6 possible types, each described in the HTML with unique names, so every other attribute is omitted in order to save the type, too.
             stats: _.omit($(cardHTML).data(), ["effects", "rarity", "cat-1", "cat-2", "name"]),
-            //TODO: Store card's ID effects using _.pick()
+            //Returns up to three (at the time of coding) IDs that match the ones listed in the effects array below.
+            effects: _.get($(cardHTML).data(), ["effects"]),
         }
         console.log(card);
         cards.push(card);
