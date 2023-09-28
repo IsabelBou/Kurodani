@@ -19,6 +19,7 @@ $.get("https://gamepress.gg/lostword/list/story-cards-list", function(html) {
             name: $(cardHTML).attr("data-name"),
             imgsource: $(cardHTML).find("img").attr("src"),
             link: $(cardHTML).find("a").attr("href"),
+            type: $(cardHTML).attr("data-cat-2"),
             rarity: $(cardHTML).attr("data-rarity"),
             //These are two stats out of 6 possible types, each described in the HTML with unique names, so every other attribute is omitted in order to save the type, too.
             stats: _.omit($(cardHTML).data(), ["effects", "rarity", "cat-1", "cat-2", "name"]),
