@@ -1,9 +1,15 @@
 const { JSDOM } = require( "jsdom" );
+const { Sequelize } = require('sequelize');
 const _ = require("lodash");
 const { window } = new JSDOM ("", {
     url: "https://gamepress.gg/lostword/list/story-cards-list",
 });
 const $ = require( "jquery" )( window );
+
+const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: 'backend\database\lostword_cards.sqlite'
+});
 
 //Retrieve full HTML
 $.get("https://gamepress.gg/lostword/list/story-cards-list", function(html) { 
