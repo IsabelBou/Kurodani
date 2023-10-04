@@ -72,33 +72,51 @@ module.exports.runMigrations = () => {
     CardInformation.belongsTo(CardStatType, {foreignKey: 'StatTypeId2'});
 
     const CardEffectType = sequelize.define('EffectTypes', {
-        EffectTypeId: {
+        effectTypeId: {
             primaryKey: true,
             //Auto generate UUIDs
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
 
         },
-        EffectType: {
+        effectType: {
             type: DataTypes.STRING,
             allowNull: false,
         },
     });
 
     const RoleDependency = sequelize.define('RoleDependency', {
-        RoleId: {
+        roleId: {
             primaryKey: true,
             //Auto generate UUIDs
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
 
         },
-        RoleType: {
+        roleType: {
             type: DataTypes.STRING,
             allowNull: false,
         },
     });
 
+    const AffectedType = sequelize.define('AffectedTypes', {
+        affectedId: {
+            primaryKey: true,
+            //Auto generate UUIDs
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
+
+        },
+        affected: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+
+        unit: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+    });
 
 
 
@@ -106,6 +124,7 @@ module.exports.runMigrations = () => {
     CardType.sync();
     CardEffectType.sync();
     RoleDependency.sync();
+    AffectedType.sync();
 
 }
 
