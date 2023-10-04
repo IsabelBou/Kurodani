@@ -85,12 +85,27 @@ module.exports.runMigrations = () => {
         },
     });
 
+    const RoleDependency = sequelize.define('RoleDependency', {
+        RoleId: {
+            primaryKey: true,
+            //Auto generate UUIDs
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
+
+        },
+        RoleType: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+    });
+
 
 
 
     CardInformation.sync();
     CardType.sync();
     CardEffectType.sync();
+    RoleDependency.sync();
 
 }
 
