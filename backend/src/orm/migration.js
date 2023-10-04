@@ -71,7 +71,26 @@ module.exports.runMigrations = () => {
     CardInformation.belongsTo(CardStatType, {foreignKey: 'StatTypeId1'});
     CardInformation.belongsTo(CardStatType, {foreignKey: 'StatTypeId2'});
 
+    const CardEffectType = sequelize.define('EffectTypes', {
+        EffectTypeId: {
+            primaryKey: true,
+            //Auto generate UUIDs
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
+
+        },
+        EffectType: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+    });
+
+
+
+
     CardInformation.sync();
     CardType.sync();
+    CardEffectType.sync();
+
 }
 
