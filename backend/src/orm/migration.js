@@ -126,15 +126,44 @@ module.exports.runMigrations = () => {
         updatedAt: false 
         }); //timestamps might prove useful to keep track of card releases
 
+        const Effects = sequelize.define('Effect', {
+            effectId: {
+                primaryKey: true,
+                //Auto generate UUIDs
+                type: DataTypes.UUID,
+                defaultValue: DataTypes.UUIDV4,
+            },
+            enemy: { //true = target is enemy, false = target is own party
+                type: DataTypes.BOOLEAN,
+            },
+            singleTarget: { //true = single-target, false = multi-target
+                type: DataTypes.BOOLEAN,
+            },
+            Turns: { //0 for instant type cards (HP/Barrier Restoration)
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            Value: { //Measure Unit defined with Type
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+        }, {
+            updatedAt: false 
+        }); //timestamps might prove useful to keep track of powercreep
+    
     CardInformation.belongsTo(CardType, {foreignKey: 'TypeId'});
     CardInformation.belongsTo(CardStatType, {foreignKey: 'StatTypeId1'});
     CardInformation.belongsTo(CardStatType, {foreignKey: 'StatTypeId2'});
+
+    Effects.belongsTo(CardEffectType, {foreignKey: 'EffectTypeId'});
+    Effects.belongsTo(AffectedType, {foreignKey: 'AffectedId'});
+    Effects.belongsTo(RoleDependency);
 
     CardType.sync();
     CardEffectType.sync();
     RoleDependency.sync();
     AffectedType.sync();
     CardInformation.sync();
+    Effects.sync();
 
 }
-
