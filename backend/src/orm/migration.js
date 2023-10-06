@@ -91,7 +91,7 @@ module.exports.runMigrations = () => {
     }); //timestamps might prove useful to keep track of new types of enemies
 
     const CardInformation = sequelize.define('CardInformation', {
-        id: {
+        cardId: {
             primaryKey: true,
             //Auto generate UUIDs
             type: DataTypes.UUID,
@@ -124,32 +124,32 @@ module.exports.runMigrations = () => {
         },
     }, {
         updatedAt: false 
-        }); //timestamps might prove useful to keep track of card releases
+    }); //timestamps might prove useful to keep track of card releases
 
-        const Effects = sequelize.define('Effect', {
-            effectId: {
-                primaryKey: true,
-                //Auto generate UUIDs
-                type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
-            },
-            enemy: { //true = target is enemy, false = target is own party
-                type: DataTypes.BOOLEAN,
-            },
-            singleTarget: { //true = single-target, false = multi-target
-                type: DataTypes.BOOLEAN,
-            },
-            Turns: { //0 for instant type cards (HP/Barrier Restoration)
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
-            Value: { //Measure Unit defined with Type
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
-        }, {
-            updatedAt: false 
-        }); //timestamps might prove useful to keep track of powercreep
+    const Effects = sequelize.define('Effect', {
+        effectId: {
+            primaryKey: true,
+            //Auto generate UUIDs
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
+        },
+        enemy: { //true = target is enemy, false = target is own party
+            type: DataTypes.BOOLEAN,
+        },
+        singleTarget: { //true = single-target, false = multi-target
+            type: DataTypes.BOOLEAN,
+        },
+        turns: { //0 for instant type cards (HP/Barrier Restoration)
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        value: { //Measure Unit defined with Type
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+    }, {
+        updatedAt: false 
+    }); //timestamps might prove useful to keep track of powercreep
     
     CardInformation.belongsTo(CardType, {foreignKey: 'TypeId'});
     CardInformation.belongsTo(CardStatType, {foreignKey: 'StatTypeId1'});
