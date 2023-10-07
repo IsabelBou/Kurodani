@@ -1,169 +1,103 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: 'database/lostword_cards.sqlite'
-});
+const {
+  CardType,
+  CardStatType,
+  RoleDependency,
+  CardEffectType,
+  AffectedType,
+  CardInformation,
+  Effects,
+} = require("./models");
 
-module.exports.runMigrations = () => {
-    const CardType = sequelize.define('CardTypes', {
-        typeId: {
-            primaryKey: true,
-            //Auto generate UUIDs
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+module.exports.runMigrations = ()  => {
+  CardInformation.belongsTo(CardType, { foreignKey: "TypeId" });
+  CardInformation.belongsTo(CardStatType, { foreignKey: "StatTypeId1" });
+  CardInformation.belongsTo(CardStatType, { foreignKey: "StatTypeId2" });
 
-        },
-        type: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-    },
-    { timestamps:false } // Will never be updated, fixed at 4 values
-    );
+  Effects.belongsTo(CardEffectType, { foreignKey: "EffectTypeId" });
+  Effects.belongsTo(AffectedType, { foreignKey: "AffectedId" });
+  Effects.belongsTo(RoleDependency);
 
-    const CardStatType = sequelize.define('CardStats', {
-        statId: {
-            primaryKey: true,
-            //Auto generate UUIDs
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-
-        },
-        statType: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-    },
-    { timestamps:false } // Will never be updated, fixed at 6 values
-    );
-
-    const RoleDependency = sequelize.define('RoleDependency', {
-        roleId: {
-            primaryKey: true,
-            //Auto generate UUIDs
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-
-        },
-        roleType: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-    },
-    { timestamps:false } // Will never be updated, fixed at 9 values
-    );
-
-    const CardEffectType = sequelize.define('EffectTypes', {
-        effectTypeId: {
-            primaryKey: true,
-            //Auto generate UUIDs
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-
-        },
-        effectType: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-    }, {
-        updatedAt: false 
-        }); //timestamps might prove useful to keep track of powercreep
-
-    const AffectedType = sequelize.define('AffectedTypes', {
-        affectedId: {
-            primaryKey: true,
-            //Auto generate UUIDs
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-
-        },
-        affected: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-
-        unit: { //Measure by which the increase/decrease shall be referenced (Percentage/Level/Quantity)
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-    }, {
-    updatedAt: false 
-    }); //timestamps might prove useful to keep track of new types of enemies
-
-    const CardInformation = sequelize.define('CardInformation', {
-        cardId: {
-            primaryKey: true,
-            //Auto generate UUIDs
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-        },
-        name: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        image: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        link: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        rarity: {
-            //3, 4 or 5
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        stat1: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        stat2: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-    }, {
-        updatedAt: false 
-    }); //timestamps might prove useful to keep track of card releases
-
-    const Effects = sequelize.define('Effect', {
-        effectId: {
-            primaryKey: true,
-            //Auto generate UUIDs
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-        },
-        enemy: { //true = target is enemy, false = target is own party
-            type: DataTypes.BOOLEAN,
-        },
-        singleTarget: { //true = single-target, false = multi-target
-            type: DataTypes.BOOLEAN,
-        },
-        turns: { //0 for instant type cards (HP/Barrier Restoration)
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        value: { //Measure Unit defined with Type
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-    }, {
-        updatedAt: false 
-    }); //timestamps might prove useful to keep track of powercreep
-    
-    CardInformation.belongsTo(CardType, {foreignKey: 'TypeId'});
-    CardInformation.belongsTo(CardStatType, {foreignKey: 'StatTypeId1'});
-    CardInformation.belongsTo(CardStatType, {foreignKey: 'StatTypeId2'});
-
-    Effects.belongsTo(CardEffectType, {foreignKey: 'EffectTypeId'});
-    Effects.belongsTo(AffectedType, {foreignKey: 'AffectedId'});
-    Effects.belongsTo(RoleDependency);
-
-    CardType.sync();
-    CardEffectType.sync();
-    RoleDependency.sync();
-    AffectedType.sync();
-    CardInformation.sync();
-    Effects.sync();
-
-}
+  Promise.all(
+    [CardType.sync(),
+    CardEffectType.sync(),
+    RoleDependency.sync(),
+    AffectedType.sync(),
+    CardInformation.sync(),
+    Effects.sync(),
+    CardStatType.sync(),
+  ]).then( () => 
+    { // Static values
+        CardType.bulkCreate([
+            {type: 'Plum'},         //411 (Gamepress)
+            {type: 'Orchid'},       //276 (Gamepress)
+            {type: 'Chrysanthemum'},//321 (Gamepress)
+            {type: 'Bamboo'}        //216 (Gamepress)
+        ]),
+        CardStatType.bulkCreate([
+            {statType: 'HP'}, 
+            {statType: 'Agility'},
+            {statType: 'Yang Attack'}, 
+            {statType: 'Yang Defense'}, 
+            {statType: 'Yin Attack'}, 
+            {statType: 'Yin Defense'}, 
+        ]),
+        RoleDependency.bulkCreate([
+            {roleType: 'None'},             
+            {roleType: 'Attack (ATK)'},     //1851 (Gamepress)
+            {roleType: 'Debuff (DBF)'},     //1946 (Gamepress)
+            {roleType: 'Defense	(DEF)'},    //1811 (Gamepress)
+            {roleType: 'Destroy	(DEST)'},   //1956 (Gamepress)
+            {roleType: 'Healing	(HEAL)'},   //1931 (Gamepress)
+            {roleType: 'Speed (SPD)'},      //1881 (Gamepress)
+            {roleType: 'Support	(SUPP)'},   //1966 (Gamepress)
+            {roleType: 'Technical (TECH)'}, //1911 (Gamepress)
+        ]),
+        CardEffectType.bulkCreate([
+            {effectType: 'Increase'},
+            {effectType: 'Decrease'},
+            {effectType: 'Damage Reduction'},
+        ]),
+        AffectedType.bulkCreate([
+            // Attributes
+            {affected: 'Accuracy', unit: 'Level'},
+            {affected: 'Agility', unit: 'Level'},
+            {affected: 'Critical Accuracy', unit: 'Level'},
+            {affected: 'Critical Attack', unit: 'Level'},
+            {affected: 'Critical Defense', unit: 'Level'},
+            {affected: 'Evasion', unit: 'Level'},
+            {affected: 'Focus', unit: 'Level'},
+            {affected: 'Yang Defense', unit: 'Level'},
+            {affected: 'Yang Attack', unit: 'Level'},
+            {affected: 'Yin Defense', unit: 'Level'},
+            {affected: 'Yin Attack', unit: 'Level'},
+            {affected: 'Poison', unit: 'Percentage'},
+            // Bullet types
+            {affected: 'Ofuda', unit: 'Percentage'},
+            {affected: 'Normal', unit: 'Percentage'},
+            {affected: 'Energy', unit: 'Percentage'},
+            {affected: 'Body', unit: 'Percentage'},
+            {affected: 'Liquid', unit: 'Percentage'},
+            {affected: 'Light', unit: 'Percentage'},
+            {affected: 'Laser', unit: 'Percentage'},
+            {affected: 'Sharp', unit: 'Percentage'},
+            {affected: 'Heavy', unit: 'Percentage'},
+            {affected: 'Missile', unit: 'Percentage'},
+            {affected: 'Slash', unit: 'Percentage'},
+            // Elements
+            {affected: 'No_Element', unit: 'Percentage'},   //176 (Gamepress)
+            {affected: 'Sun', unit: 'Percentage'},           //191 (Gamepress)
+            {affected: 'Moon', unit: 'Percentage'},         //1521 (Gamepress)
+            {affected: 'Fire', unit: 'Percentage'},         //1511 (Gamepress)
+            {affected: 'Water', unit: 'Percentage'},        //1531 (Gamepress)
+            {affected: 'Wood', unit: 'Percentage'},         //181 (Gamepress)
+            {affected: 'Metal', unit: 'Percentage'},        //1516 (Gamepress)
+            {affected: 'Earth', unit: 'Percentage'},        //1526 (Gamepress)
+            {affected: 'Star', unit: 'Percentage'},         //186 (Gamepress)
+            //Consumibles
+            {affected: 'Barrier', unit: 'Level'},
+            {affected: 'Spirit', unit: 'Quantity'},
+            {affected: 'Spirit Collection', unit: 'Percentage'},
+            //Character Traits will be added dynamically from this point.
+        ])
+    })
+};

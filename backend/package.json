@@ -25,6 +25,9 @@
   "dependencies": {
     "jquery": "^3.7.1",
     "jsdom": "^22.1.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "prettier": "^3.0.3",
+    "sequelize": "^6.33.0",
+    "sqlite3": "^5.1.6"
   }
 }
