@@ -6,6 +6,7 @@ const {
   AffectedType,
   CardInformation,
   Effects,
+  CardsEffects,
 } = require("./models");
 
 module.exports.runMigrations = ()  => {
@@ -16,6 +17,10 @@ module.exports.runMigrations = ()  => {
   Effects.belongsTo(CardEffectType, { foreignKey: "EffectTypeId" });
   Effects.belongsTo(AffectedType, { foreignKey: "AffectedId" });
   Effects.belongsTo(RoleDependency);
+  
+  //CardsEffects is used as the joint table, with every Card's Effects
+  CardInformation.belongsToMany(Effects, { through: CardsEffects, foreignKey: "CardIdIs" });
+  Effects.belongsToMany(CardInformation, { through: CardsEffects, foreignKey: "HasEffectId"  });
 
   Promise.all(
     [CardType.sync(),
@@ -25,6 +30,7 @@ module.exports.runMigrations = ()  => {
     CardInformation.sync(),
     Effects.sync(),
     CardStatType.sync(),
+    CardsEffects.sync(),
   ]).then( () => 
     { // Static values
         CardType.bulkCreate([
@@ -84,15 +90,15 @@ module.exports.runMigrations = ()  => {
             {affected: 'Missile', unit: 'Percentage'},
             {affected: 'Slash', unit: 'Percentage'},
             // Elements
-            {affected: 'No_Element', unit: 'Percentage'},   //176 (Gamepress)
-            {affected: 'Sun', unit: 'Percentage'},           //191 (Gamepress)
+            {affected: 'No_Element', unit: 'Percentage'},   //176  (Gamepress)
+            {affected: 'Sun', unit: 'Percentage'},          //191  (Gamepress)
             {affected: 'Moon', unit: 'Percentage'},         //1521 (Gamepress)
             {affected: 'Fire', unit: 'Percentage'},         //1511 (Gamepress)
             {affected: 'Water', unit: 'Percentage'},        //1531 (Gamepress)
-            {affected: 'Wood', unit: 'Percentage'},         //181 (Gamepress)
+            {affected: 'Wood', unit: 'Percentage'},         //181  (Gamepress)
             {affected: 'Metal', unit: 'Percentage'},        //1516 (Gamepress)
             {affected: 'Earth', unit: 'Percentage'},        //1526 (Gamepress)
-            {affected: 'Star', unit: 'Percentage'},         //186 (Gamepress)
+            {affected: 'Star', unit: 'Percentage'},         //186  (Gamepress)
             //Consumibles
             {affected: 'Barrier', unit: 'Level'},
             {affected: 'Spirit', unit: 'Quantity'},

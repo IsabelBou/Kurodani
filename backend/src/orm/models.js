@@ -171,6 +171,10 @@ const Effects = sequelize.define(
   },
 ); //timestamps might prove useful to keep track of powercreep
 
+//Joint table for the Many-to-Many relationship between Effects and Cards
+const CardsEffects = sequelize.define('CardsEffects', {}, { updatedAt: false });
+
+
 module.exports = {
   CardType,
   CardStatType,
@@ -179,4 +183,5 @@ module.exports = {
   AffectedType,
   CardInformation,
   Effects,
+  CardsEffects,
 };
