@@ -9,9 +9,7 @@ const CardType = sequelize.define(
   {
     typeId: {
       primaryKey: true,
-      //Auto generate UUIDs
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
     },
     type: {
       type: DataTypes.STRING,
@@ -43,9 +41,7 @@ const RoleDependency = sequelize.define(
   {
     roleId: {
       primaryKey: true,
-      //Auto generate UUIDs
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
     },
     roleType: {
       type: DataTypes.STRING,
@@ -75,12 +71,12 @@ const CardEffectType = sequelize.define(
 ); //timestamps might prove useful to keep track of powercreep
 
 const AffectedType = sequelize.define(
-  "AffectedTypes",
+  "Affects",
   {
     affectedId: {
       primaryKey: true,
-      //Auto generate UUIDs
-      type: DataTypes.UUID,
+      //Auto generate UUIDs if none exist
+      type: DataTypes.STRING,
       defaultValue: DataTypes.UUIDV4,
     },
     affected: {
@@ -90,13 +86,19 @@ const AffectedType = sequelize.define(
     unit: {
       //Measure by which the increase/decrease shall be referenced (Percentage/Level/Quantity)
       type: DataTypes.STRING,
+      defaultValue: 'Percentage', //After manual values, Traits (measured in Percentage) will be added with RegEx
+      allowNull: false,
+    },
+    affectedType: {
+      type: DataTypes.STRING,
+      defaultValue: 'Trait', //After manual values, Traits (measured in Percentage) will be added with RegEx
       allowNull: false,
     },
   },
   {
     updatedAt: false,
   },
-); //timestamps might prove useful to keep track of new types of enemies
+); //timestamps might prove useful to keep track of release of new types of enemies
 
 const CardInformation = sequelize.define(
   "CardInformation",
@@ -138,14 +140,13 @@ const CardInformation = sequelize.define(
   },
 ); //timestamps might prove useful to keep track of card releases
 
-const Effects = sequelize.define(
-  "Effect",
+const GamepressEffects = sequelize.define(
+  "GamepressEffects",
+  //Basic Effect information extracted from Gamepress' Effect List
   {
-    effectId: {
+    gpEffectId: {
       primaryKey: true,
-      //Auto generate UUIDs
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
     },
     enemy: {
       //true = target is enemy, false = target is own party
@@ -155,13 +156,29 @@ const Effects = sequelize.define(
       //true = single-target, false = multi-target
       type: DataTypes.BOOLEAN,
     },
+  },
+  {
+    updatedAt: false,
+  },
+); //creation records might prove useful to keep track of powercreep
+
+const ExtendedEffects = sequelize.define(
+  "ExtendedEffects",
+  //These attributes are not reflected in gamepress' effects and share the same gpEffectId
+  {
+    exEffectId: {
+      primaryKey: true,
+      //Auto generate UUIDs
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+    },
     turns: {
       //0 for instant type cards (HP/Barrier Restoration)
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    value: {
-      //Measure Unit defined with Type
+    amount: {
+      //Units enhanced (measurement defined with affectedType)
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -169,7 +186,8 @@ const Effects = sequelize.define(
   {
     updatedAt: false,
   },
-); //timestamps might prove useful to keep track of powercreep
+); //creation records might prove useful to keep track of powercreep
+
 
 //Joint table for the Many-to-Many relationship between Effects and Cards
 const CardsEffects = sequelize.define('CardsEffects', {}, { updatedAt: false });
@@ -182,6 +200,7 @@ module.exports = {
   CardEffectType,
   AffectedType,
   CardInformation,
-  Effects,
+  GamepressEffects,
+  ExtendedEffects,
   CardsEffects,
 };

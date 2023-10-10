@@ -5,7 +5,7 @@ const lostWordCardDataURL =
 const { window } = new JSDOM("", {
   url: lostWordCardDataURL,
 });
-const { saveCard, saveEffect } = require("../orm/storeData");
+const { saveCard, saveEffect } = require("../orm/management");
 const $ = require("jquery")(window);
 
 const basicCardExtraction = () => {
